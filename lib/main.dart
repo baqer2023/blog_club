@@ -356,36 +356,60 @@ class _Post extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(32, 8, 32, 8),
-      height: 149,
+      margin: const EdgeInsets.fromLTRB(32, 8, 32, 8),
+      padding: const EdgeInsets.fromLTRB(8, 16, 8, 16),
+      // height: 500,
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
         boxShadow: const [
           BoxShadow(blurRadius: 16, color: Color(0x1a5282FF))
-        ]
+        ],
       ),
       child: Row(
         children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(16),
-
-            child: Image.asset('assets/img/posts/small/${post.imageFileName}')
-            ),
-          Column(
-            children: [
-              Text(post.caption),
-              SizedBox(
-                height: 8,
-              ),
-              Text(post.title),
-              Row(
+            child: Image.asset('assets/img/posts/small/${post.imageFileName}'),
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(CupertinoIcons.hand_thumbsup,size: 20, )
+                  Text(post.caption),
+                  const SizedBox(height: 8),
+                  Text(post.title),
+                  const SizedBox(height: 16),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      const Icon(CupertinoIcons.hand_thumbsup,
+                      size: 16, color: Colors.blueGrey),
+                  const SizedBox(width: 4),
+                  Text(post.likes),
+                  const SizedBox(width: 16),
+                  const Icon(CupertinoIcons.clock,
+                      size: 16, color: Colors.blueGrey),
+                  const SizedBox(width: 4),
+                  Text(post.time),
+                  const Spacer(),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: Icon(
+                      CupertinoIcons.bookmark,
+                      size: 16,
+                      color: Colors.blueGrey,
+                    ),
+                  ),
+                    ],
+                  )
                 ],
-              )
-            ],
-          )  
+              ),
+            ),
+          ),
         ],
       ),
     );
