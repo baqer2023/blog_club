@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dotted_border/dotted_border.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/data.dart';
 
@@ -82,6 +83,7 @@ class HomeScreen extends StatelessWidget {
 
               SizedBox(height: 16),
               _CategoryList(),
+              _PostList(),
             ],
           ),
         ),
@@ -100,10 +102,11 @@ class _CategoryList extends StatelessWidget {
       itemCount: categories.length,
       itemBuilder: (context, index, realIndex) {
         final fixedIndex = index % categories.length;
-        return _CategoryItem(category: categories[fixedIndex],
-         left: realIndex==0?32:8,
-         right: realIndex==categories.length -1 ? 32 : 8,
-         );
+        return _CategoryItem(
+          category: categories[fixedIndex],
+          left: realIndex == 0 ? 32 : 8,
+          right: realIndex == categories.length - 1 ? 32 : 8,
+        );
       },
       options: CarouselOptions(
         scrollDirection: Axis.horizontal,
@@ -125,7 +128,12 @@ class _CategoryItem extends StatelessWidget {
   final double left;
   final double right;
 
-  const _CategoryItem({super.key, required this.category, required this.left, required this.right});
+  const _CategoryItem({
+    super.key,
+    required this.category,
+    required this.left,
+    required this.right,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -140,11 +148,13 @@ class _CategoryItem extends StatelessWidget {
             bottom: 16,
             child: Container(
               decoration: BoxDecoration(
-                boxShadow: [BoxShadow(blurRadius: 20, color: Color(0xaa0D253C))],
+                boxShadow: [
+                  BoxShadow(blurRadius: 20, color: Color(0xaa0D253C)),
+                ],
               ),
             ),
           ),
-      
+
           Positioned.fill(
             child: Container(
               margin: EdgeInsets.fromLTRB(0, 0, 0, 16),
@@ -164,7 +174,7 @@ class _CategoryItem extends StatelessWidget {
               ),
             ),
           ),
-      
+
           Positioned(
             bottom: 48,
             left: 32,
@@ -296,4 +306,88 @@ class _MouseScrollBehavior extends MaterialScrollBehavior {
     PointerDeviceKind.touch,
     PointerDeviceKind.mouse, // ← اجازه‌ی drag با موس
   };
+}
+
+class _PostList extends StatelessWidget {
+  const _PostList({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final posts = AppDatabase.posts;
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 32, top: 24),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Text(
+                'Latest News ',
+                style: Theme.of(context).textTheme.bodyLarge,
+              ),
+              TextButton(onPressed: () {}, child: const Text('More')),
+            ],
+          ),
+        ),
+
+        ListView.builder(
+          itemCount: posts.length,
+          itemExtent: 141,
+          shrinkWrap: true,
+          itemBuilder: (context, index) {
+            final post = posts[index];
+            return _Post(post: post);
+          },
+        ),
+      ],
+    );
+  }
+}
+
+class _Post extends StatelessWidget {
+  const _Post({
+    super.key,
+    required this.post,
+  });
+
+  final PostData post;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: EdgeInsets.fromLTRB(32, 8, 32, 8),
+      height: 149,
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: const [
+          BoxShadow(blurRadius: 16, color: Color(0x1a5282FF))
+        ]
+      ),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(16),
+
+            child: Image.asset('assets/img/posts/small/${post.imageFileName}')
+            ),
+          Column(
+            children: [
+              Text(post.caption),
+              SizedBox(
+                height: 8,
+              ),
+              Text(post.title),
+              Row(
+                children: [
+                  Icon(CupertinoIcons.hand_thumbsup,size: 20, )
+                ],
+              )
+            ],
+          )  
+        ],
+      ),
+    );
+  }
 }
