@@ -79,9 +79,9 @@ class HomeScreen extends StatelessWidget {
                 ),
               ),
               _StoryList(stories: stories),
- 
-            _CategoryList(),
-             
+
+              SizedBox(height: 16),
+              _CategoryList(),
             ],
           ),
         ),
@@ -96,67 +96,88 @@ class _CategoryList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final categories = AppDatabase.categories;
-  return CarouselSlider.builder(
-  itemCount: categories.length,
-  itemBuilder: (context, index, realIndex) {
-    final fixedIndex = index % categories.length;
-    return _CategoryItem(category: categories[fixedIndex]);
-  },
-  options: CarouselOptions(
-    scrollDirection: Axis.horizontal,
-    viewportFraction: 0.8,
-    aspectRatio: 1,
-    initialPage: 0,
-    disableCenter: true,
-    enableInfiniteScroll: true,
-  ),
-);
-
+    return CarouselSlider.builder(
+      itemCount: categories.length,
+      itemBuilder: (context, index, realIndex) {
+        final fixedIndex = index % categories.length;
+        return _CategoryItem(category: categories[fixedIndex],
+         left: realIndex==0?32:8,
+         right: realIndex==categories.length -1 ? 32 : 8,
+         );
+      },
+      options: CarouselOptions(
+        scrollDirection: Axis.horizontal,
+        viewportFraction: 0.8,
+        aspectRatio: 1,
+        initialPage: 0,
+        scrollPhysics: const BouncingScrollPhysics(),
+        disableCenter: true,
+        enableInfiniteScroll: true,
+        enlargeCenterPage: true,
+        enlargeStrategy: CenterPageEnlargeStrategy.height,
+      ),
+    );
   }
 }
 
 class _CategoryItem extends StatelessWidget {
   final Category category;
+  final double left;
+  final double right;
 
-  const _CategoryItem({super.key, required this.category});
+  const _CategoryItem({super.key, required this.category, required this.left, required this.right});
 
   @override
   Widget build(BuildContext context) {
-    return Stack(
-      children: [
-        Container(
-          margin: EdgeInsets.all(8),
-          child: ClipRRect(
-        borderRadius: BorderRadius.circular(32),
-        child: Image.asset(
-          'assets/img/posts/large/${category.imageFileName}',
-          fit: BoxFit.cover,
-        ),
-          ),
-          foregroundDecoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(32),
-        gradient: LinearGradient(begin: Alignment.bottomCenter,colors: [
-           Color(0xff0D253C),
-         Colors.transparent,
-        ]
-        
-        )
-          ),
-        ),
-       
-
-        Positioned(
-          bottom: 80,
-          left: 40,
-          child: Text(category.title , style: Theme.of(context).textTheme.bodySmall!.apply(color: Colors.white),
-          )
+    return Container(
+      margin: EdgeInsets.fromLTRB(left, 0, right, 0),
+      child: Stack(
+        children: [
+          Positioned.fill(
+            top: 100,
+            right: 56,
+            left: 56,
+            bottom: 16,
+            child: Container(
+              decoration: BoxDecoration(
+                boxShadow: [BoxShadow(blurRadius: 20, color: Color(0xaa0D253C))],
+              ),
+            ),
           ),
       
-
-      ],
-
-    )
-;
+          Positioned.fill(
+            child: Container(
+              margin: EdgeInsets.fromLTRB(0, 0, 0, 16),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: Image.asset(
+                  'assets/img/posts/large/${category.imageFileName}',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              foregroundDecoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(32),
+                gradient: LinearGradient(
+                  begin: Alignment.bottomCenter,
+                  colors: [Color(0xff0D253C), Colors.transparent],
+                ),
+              ),
+            ),
+          ),
+      
+          Positioned(
+            bottom: 48,
+            left: 32,
+            child: Text(
+              category.title,
+              style: Theme.of(
+                context,
+              ).textTheme.bodySmall!.apply(color: Colors.white),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 
@@ -269,25 +290,10 @@ class _Story extends StatelessWidget {
   }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 class _MouseScrollBehavior extends MaterialScrollBehavior {
   @override
   Set<PointerDeviceKind> get dragDevices => {
-        PointerDeviceKind.touch,
-        PointerDeviceKind.mouse, // ← اجازه‌ی drag با موس
-      };
+    PointerDeviceKind.touch,
+    PointerDeviceKind.mouse, // ← اجازه‌ی drag با موس
+  };
 }
